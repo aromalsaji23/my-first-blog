@@ -1,61 +1,22 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-    <style>
-        /* CSS for article container */
-        .post {
-            margin-bottom: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-        }
-
-        /* CSS for actions container */
-        .actions {
-            margin-bottom: 10px;
-        }
-
-        /* CSS for the button */
-        .btn-secondary {
-            color: #fff;
-            background-color: #6c757d;
-            border-color: #6c757d;
-            padding: 5px 10px;
-            text-decoration: none;
-        }
-
-        /* CSS for the time element */
-        .date {
-            color: #888;
-        }
-
-        /* CSS for the title */
-        h2 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        /* CSS for the text */
-        p {
-            color: #666;
-            font-size: 16px;
-        }
-    </style>
-
     <article class="post">
         <aside class="actions">
             {% if user.is_authenticated %}
-                <a class="btn btn-secondary" href="{% url 'post_edit' pk=post.pk %}">
-                    {% include './icons/pencil-fill.svg' %}
-                </a>
-            {% endif %}
+            <a class="btn btn-secondary" href="{% url 'post_edit' pk=post.pk %}">
+               {% include './icons/pencil-fill.svg' %}
+            </a>
+            <a class="btn btn-default" href="{% url 'post_remove' pk=post.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+       {% endif %}
         </aside>
         {% if post.published_date %}
-            <time class="date">
-                {{ post.published_date }}
-            </time>
-        {% endif %}
+        <div class="date">
+            {{ post.published_date }}
+        </div>
+    {% else %}
+        <a class="btn btn-default" href="{% url 'post_publish' pk=post.pk %}">Publish</a>
+    {% endif %}
         <h2>{{ post.title }}</h2>
         <p>{{ post.text|linebreaksbr }}</p>
     </article>
