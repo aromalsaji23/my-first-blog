@@ -3,6 +3,9 @@ from django.utils import timezone
 from .models import Post
 from .forms import PostForm
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+
 
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
@@ -17,7 +20,11 @@ def post_new(request):
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
+            if request.user.is_authenticated:
+                post.author = request.user
+            else:
+                # Fallback to a default user if the request user is not authenticated
+                post.author = User.objects.first()  # Change this to your desired fallback user
             post.save()
             return redirect('post_detail', pk=post.pk)
     else:
